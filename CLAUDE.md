@@ -42,6 +42,7 @@ bun run format:check
 - **Component Library**: shadcn/ui (New York style)
 - **Code Formatting**: Prettier with Tailwind CSS plugin
 - **Linting**: ESLint with Next.js rules + Prettier integration
+- **API Framework**: ElysiaJS for type-safe API routes
 
 ### State Management & Data Fetching
 
@@ -76,6 +77,9 @@ The project includes 45+ pre-built shadcn/ui components in `src/components/ui/`:
 ```
 src/
 ├── app/              # Next.js App Router pages
+│   ├── api/         # API routes
+│   │   └── [[...slugs]]/
+│   │       └── route.ts  # ElysiaJS API handler
 │   ├── layout.tsx    # Root layout with providers
 │   ├── page.tsx      # Home page
 │   └── globals.css   # Global styles and Tailwind imports
@@ -142,3 +146,27 @@ src/
 - The project uses Google Fonts (Geist and Geist Mono)
 - NextTopLoader provides page transition feedback
 - Pre-commit hooks automatically format and lint code
+
+## API Development with ElysiaJS
+
+### API Structure
+
+- All API routes are handled by ElysiaJS in `src/app/api/[[...slugs]]/route.ts`
+- The catch-all route pattern allows ElysiaJS to handle all `/api/*` requests
+- Type-safe API with automatic validation using Elysia's schema
+
+### Available Endpoints
+
+- `GET /api/` - API welcome message
+- `GET /api/health` - Health check endpoint
+- `GET /api/users` - List all users
+- `GET /api/users/:id` - Get user by ID
+- `POST /api/users` - Create new user
+- `GET /api/domains` - List domains
+- `POST /api/domains/check` - Check domain availability
+
+### Adding New API Endpoints
+
+1. Add new routes to the Elysia app in `src/app/api/[[...slugs]]/route.ts`
+2. Use Elysia's type system for request/response validation
+3. Export the API type for client-side type safety
