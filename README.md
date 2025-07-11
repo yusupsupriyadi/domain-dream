@@ -50,8 +50,21 @@ bun format:check
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
 - **UI Components**: shadcn/ui
+- **API Framework**: ElysiaJS for type-safe API routes
 - **Package Manager**: Bun
 - **Code Quality**: ESLint, Prettier, Husky with lint-staged
+
+## API Endpoints
+
+The application includes a RESTful API built with ElysiaJS:
+
+- `GET /api` - API information
+- `GET /api/health` - Health check endpoint
+- `GET /api/users` - List users
+- `GET /api/users/:id` - Get user by ID
+- `POST /api/users` - Create new user
+- `GET /api/domains` - List example domains
+- `POST /api/domains/check` - Check domain availability
 
 ## Learn More
 
