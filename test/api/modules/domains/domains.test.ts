@@ -145,5 +145,49 @@ describe('Domains Module', () => {
 
 			expect(response.status).toBe(422);
 		});
+
+		it('should handle full domain name with TLD extraction', async () => {
+			const response = await app.handle(
+				new Request('http://localhost/domains/check', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						name: 'myawesomesite.com',
+						tlds: [],
+					}),
+				})
+			);
+
+			expect(response.status).toBe(200);
+
+			const data = await response.json();
+			expect(data.keyword).toBe('myawesomesite');
+			expect(data.totalChecked).toBe(1); // Only check .com
+			expect(data.results[0].domain).toBe('myawesomesite.com');
+		});
+
+		it('should handle subdomain extraction correctly', async () => {
+			const response = await app.handle(
+				new Request('http://localhost/domains/check', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						name: 'api.example.com',
+						tlds: [],
+					}),
+				})
+			);
+
+			expect(response.status).toBe(200);
+
+			const data = await response.json();
+			expect(data.keyword).toBe('api.example');
+			expect(data.totalChecked).toBe(1);
+			expect(data.results[0].domain).toBe('api.example.com');
+		});
 	});
 });
