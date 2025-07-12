@@ -4,10 +4,10 @@ import { t } from 'elysia';
 export const CheckDomainDto = t.Object({
 	name: t.String({
 		minLength: 3,
-		maxLength: 63,
-		pattern: '^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$',
-		description: 'Domain keyword to check',
-		example: 'myawesomesite',
+		maxLength: 253,
+		pattern: '^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$',
+		description: 'Domain keyword or full domain to check',
+		example: 'myawesomesite or myawesomesite.com',
 	}),
 	tlds: t.Optional(
 		t.Array(

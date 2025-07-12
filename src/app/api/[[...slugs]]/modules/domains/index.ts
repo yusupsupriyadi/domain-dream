@@ -25,7 +25,7 @@ export const domains = new Elysia({ prefix: '/domains' }).post(
 		detail: {
 			summary: 'Check Multiple Domains',
 			description:
-				'Check domain availability across multiple TLDs using RDAP. If TLDs not specified, defaults to ["com", "id", "org"]',
+				'Check domain availability across multiple TLDs using RDAP. Accepts domain keyword (e.g., "example") or full domain (e.g., "example.com"). If TLDs not specified, extracts from domain or defaults to ["com", "id", "org"]',
 			tags: ['Domains'],
 		},
 	}

@@ -12,11 +12,35 @@ export class DomainService {
 		data: CheckDomainDto
 	): Promise<DomainCheckResponse> {
 		try {
-			// Use default TLDs if not provided, null, or empty array
-			const tlds =
-				data.tlds && data.tlds.length > 0 ? data.tlds : DEFAULT_TLDS;
+			// Process the domain name to handle cases like "example.com"
+			let domainName = data.name;
+			let extractedTld: string | undefined;
 
-			return await domainChecker.checkKeywordTLDs(data.name, tlds);
+			// Check if the name contains a dot (full domain provided)
+			if (domainName.includes('.')) {
+				const parts = domainName.split('.');
+				if (parts.length >= 2) {
+					// Extract TLD from the domain
+					extractedTld = parts[parts.length - 1];
+					// Get the domain name without TLD
+					domainName = parts.slice(0, -1).join('.');
+				}
+			}
+
+			// Determine which TLDs to check
+			let tlds: string[];
+			if (data.tlds && data.tlds.length > 0) {
+				// Use provided TLDs
+				tlds = data.tlds;
+			} else if (extractedTld) {
+				// Use extracted TLD if no TLDs provided
+				tlds = [extractedTld];
+			} else {
+				// Use default TLDs
+				tlds = DEFAULT_TLDS;
+			}
+
+			return await domainChecker.checkKeywordTLDs(domainName, tlds);
 		} catch (error) {
 			throw new Error(
 				`Failed to check domains for keyword ${data.name}: ${
