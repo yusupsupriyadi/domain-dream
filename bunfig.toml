@@ -1,0 +1,6 @@
+# Bun configuration file
+
+[test]
+# Coverage settings
+coverage = false
+coverageThreshold = 80
