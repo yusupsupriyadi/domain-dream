@@ -1,82 +1,152 @@
 # Domain Dream
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A modern domain availability checker built with Next.js 15, TypeScript, and ElysiaJS.
 
-## Getting Started
+## Features
 
-First, install dependencies:
-
-```bash
-bun install
-```
-
-Then, run the development server:
-
-```bash
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Development Scripts
-
-```bash
-# Run development server
-bun dev
-
-# Build for production
-bun build
-
-# Start production server
-bun start
-
-# Run linting
-bun lint
-
-# Format code with Prettier
-bun format
-
-# Check code formatting
-bun format:check
-```
+- 🔍 **Domain Availability Checking**: Check domain availability across multiple TLDs using RDAP protocol
+- ⚡ **Fast & Type-Safe API**: Built with ElysiaJS for maximum performance and type safety
+- 🎨 **Modern UI**: Beautiful interface with shadcn/ui components
+- 🧪 **Fully Tested**: Comprehensive test coverage with Bun test runner
+- 📱 **Responsive Design**: Works seamlessly on all devices
 
 ## Tech Stack
 
 - **Framework**: Next.js 15.3.5 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **API Framework**: ElysiaJS for type-safe API routes
+- **Language**: TypeScript (strict mode)
 - **Package Manager**: Bun
-- **Code Quality**: ESLint, Prettier, Husky with lint-staged
+- **API**: ElysiaJS with modular architecture
+- **UI Components**: shadcn/ui (45+ components)
+- **Styling**: Tailwind CSS v4
+- **State Management**: TanStack Query + Zustand
+- **Testing**: Bun test runner
+- **Code Quality**: ESLint + Prettier with pre-commit hooks
 
-## API Endpoints
+## Getting Started
 
-The application includes a RESTful API built with ElysiaJS:
+### Prerequisites
 
-- `GET /api` - API information
-- `GET /api/health` - Health check endpoint
-- `GET /api/users` - List users
-- `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create new user
-- `GET /api/domains` - List example domains
+- [Bun](https://bun.sh) installed on your machine
+- Node.js 18+ (for compatibility)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/domain-dream.git
+cd domain-dream
+
+# Install dependencies
+bun install
+
+# Run development server
+bun run dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+## Available Scripts
+
+```bash
+bun run dev          # Start development server with Turbopack
+bun run build        # Build for production
+bun run start        # Start production server
+bun run lint         # Run ESLint
+bun run format       # Format code with Prettier
+bun run format:check # Check code formatting
+bun test            # Run tests
+bun test:watch      # Run tests in watch mode
+```
+
+## API Documentation
+
+The API is available at `/api` with Swagger documentation at `/api/swagger`.
+
+### Endpoints
+
+- `GET /api/` - API information
+- `GET /api/health` - Health check
 - `POST /api/domains/check` - Check domain availability
 
-## Learn More
+### Domain Checking
 
-To learn more about Next.js, take a look at the following resources:
+Check domain availability by sending a POST request to `/api/domains/check`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```json
+{
+	"name": "example",
+	"tlds": ["com", "net", "org"] // Optional, defaults to ["com", "id", "org"]
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   └── [[...slugs]]/  # ElysiaJS catch-all route
+│   │       ├── modules/   # Modular API structure
+│   │       │   ├── health/
+│   │       │   └── domains/
+│   │       └── route.ts   # Main API handler
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # React components
+│   └── ui/               # shadcn/ui components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and services
+│   ├── axios.ts          # HTTP client
+│   ├── domain-checker.ts # RDAP implementation
+│   └── providers/        # React providers
+└── test/                 # Test files
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Testing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tests are written using Bun's built-in test runner:
+
+```bash
+# Run all tests
+bun test
+
+# Run tests in watch mode
+bun test:watch
+```
+
+## Code Style
+
+This project uses Prettier for code formatting with the following configuration:
+
+- Tabs with width 4
+- Single quotes
+- Semicolons required
+- Trailing comma ES5
+- Max line width 80
+
+Pre-commit hooks automatically format and lint code before commits.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes using conventional commits:
+    - `feat:` new feature
+    - `fix:` bug fix
+    - `docs:` documentation changes
+    - `style:` code formatting
+    - `refactor:` code refactoring
+    - `test:` adding/updating tests
+    - `chore:` routine tasks
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- [ElysiaJS](https://elysiajs.com) for the amazing API framework
+- [shadcn/ui](https://ui.shadcn.com) for the beautiful components
+- [Vercel](https://vercel.com) for Next.js and hosting solutions

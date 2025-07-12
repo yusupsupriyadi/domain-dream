@@ -79,15 +79,27 @@ src/
 ├── app/              # Next.js App Router pages
 │   ├── api/         # API routes
 │   │   └── [[...slugs]]/
-│   │       └── route.ts  # ElysiaJS API handler
+│   │       ├── route.ts  # Main ElysiaJS API handler
+│   │       └── modules/  # Modular API structure
+│   │           ├── health/
+│   │           │   ├── index.ts    # Controller
+│   │           │   ├── service.ts  # Business logic
+│   │           │   └── model.ts    # Types & validation
+│   │           └── domains/
+│   │               ├── index.ts    # Controller
+│   │               ├── service.ts  # Business logic
+│   │               └── model.ts    # Types & validation
 │   ├── layout.tsx    # Root layout with providers
 │   ├── page.tsx      # Home page
 │   └── globals.css   # Global styles and Tailwind imports
 ├── components/       # React components
 │   └── ui/          # shadcn/ui components
 ├── hooks/           # Custom React hooks
+│   ├── use-api.ts   # API hooks (useCheckDomain)
 │   └── use-mobile.ts # Mobile detection hook
 └── lib/             # Utilities and providers
+    ├── axios.ts     # Axios instance configuration
+    ├── domain-checker.ts # RDAP domain checking
     ├── providers/   # React context providers
     └── utils.ts     # Utility functions (cn)
 ```
@@ -123,12 +135,31 @@ src/
 
 ## Code Quality Tools
 
-### Prettier Configuration
+### Prettier Configuration (.prettierrc)
 
-- **Tab Width**: 4 spaces (but using tabs)
-- **Use Tabs**: true
-- **Single Quotes**: true for JS/TS and JSX
-- **Trailing Comma**: ES5
+```json
+{
+	"semi": true,
+	"trailingComma": "es5",
+	"singleQuote": true,
+	"printWidth": 80,
+	"tabWidth": 4,
+	"useTabs": true,
+	"bracketSpacing": true,
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"bracketSameLine": false,
+	"jsxSingleQuote": true,
+	"plugins": ["prettier-plugin-tailwindcss"]
+}
+```
+
+**IMPORTANT**: All code must follow this Prettier configuration. Key points:
+
+- **Semicolons**: Always use semicolons
+- **Quotes**: Single quotes for strings and JSX
+- **Indentation**: Tabs with width 4
+- **Line width**: Maximum 80 characters
 - **Tailwind CSS Plugin**: Automatically sorts Tailwind classes
 
 ### Pre-commit Hooks
@@ -138,14 +169,51 @@ src/
     - Prettier formatting for all supported files
     - ESLint fixing for JS/TS files
 
+## Testing
+
+### Test Framework
+
+- **Test Runner**: Bun's built-in test runner (Jest-like API)
+- **Test Location**: `test/` directory
+- **Test Commands**:
+    - `bun test` - Run all tests
+    - `bun test:watch` - Run tests in watch mode
+
+### Test Structure
+
+```
+test/
+├── api/
+│   ├── api.test.ts         # Integration tests
+│   └── modules/
+│       ├── health/
+│       │   └── health.test.ts
+│       └── domains/
+│           └── domains.test.ts
+```
+
+### Writing Tests
+
+```typescript
+import { describe, expect, it } from 'bun:test';
+import { Elysia } from 'elysia';
+
+describe('Module Name', () => {
+	it('should test something', async () => {
+		const app = new Elysia().get('/', () => 'hi');
+		const response = await app.handle(new Request('http://localhost/'));
+		expect(response.status).toBe(200);
+	});
+});
+```
+
 ## Important Notes
 
-- No testing framework is currently configured
-- No CI/CD workflows exist yet
 - Tailwind CSS v4 doesn't require a config file
 - The project uses Google Fonts (Geist and Geist Mono)
 - NextTopLoader provides page transition feedback
 - Pre-commit hooks automatically format and lint code
+- No CI/CD workflows exist yet
 
 ## API Development with ElysiaJS
 
@@ -159,14 +227,65 @@ src/
 
 - `GET /api/` - API welcome message
 - `GET /api/health` - Health check endpoint
-- `GET /api/users` - List all users
-- `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create new user
-- `GET /api/domains` - List domains
-- `POST /api/domains/check` - Check domain availability
+- `POST /api/domains/check` - Check domain availability (defaults to TLDs: ["com", "id", "org"] if not specified)
 
-### Adding New API Endpoints
+### API Structure (ElysiaJS Best Practices)
 
-1. Add new routes to the Elysia app in `src/app/api/[[...slugs]]/route.ts`
-2. Use Elysia's type system for request/response validation
-3. Export the API type for client-side type safety
+The API follows a modular structure based on ElysiaJS best practices:
+
+#### Module Organization
+
+Each feature module contains:
+
+- **index.ts** (Controller): Handles routing and HTTP concerns
+- **service.ts** (Service): Contains business logic
+- **model.ts** (Model): Defines types, validation schemas, and response models
+
+#### Adding New API Modules
+
+1. Create a new module folder in `src/app/api/[[...slugs]]/modules/`
+2. Implement the three-file structure (index, service, model)
+3. Import and mount the module in main `route.ts`
+4. Follow separation of concerns:
+    - Controllers only handle routing
+    - Services contain business logic
+    - Models define data structures
+
+#### Type Safety
+
+- Use Elysia's `t` object for validation schemas
+- Export TypeScript types using `typeof Schema.static`
+- Define explicit response models for all endpoints
+
+### API Hooks
+
+- **useCheckDomain**: React Query mutation hook for domain checking
+    - Accepts: `{ name: string, tlds?: string[] }`
+    - Returns: Domain availability results
+
+## Domain Checking Implementation
+
+### RDAP Integration
+
+The project uses RDAP (Registration Data Access Protocol) for checking domain availability:
+
+- Implementation in `src/lib/domain-checker.ts`
+- Checks multiple TLDs concurrently
+- Returns registration status, registrar info, and dates
+- Default TLDs when not specified: ["com", "id", "org"]
+
+### Domain Check Request Format
+
+```typescript
+{
+  name: string,      // Domain keyword (e.g., "mysite")
+  tlds?: string[]    // Optional TLDs (defaults to ["com", "id", "org"])
+}
+```
+
+## Important Reminders
+
+- ALWAYS follow the Prettier configuration defined in .prettierrc for all code
+- Use tabs with width 4, single quotes, semicolons
+- Follow ElysiaJS modular structure for API development
+- Maintain separation of concerns (controller, service, model)
