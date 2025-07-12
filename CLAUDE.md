@@ -278,10 +278,17 @@ The project uses RDAP (Registration Data Access Protocol) for checking domain av
 
 ```typescript
 {
-  name: string,      // Domain keyword (e.g., "mysite")
-  tlds?: string[]    // Optional TLDs (defaults to ["com", "id", "org"])
+  name: string,      // Domain keyword (e.g., "mysite") or full domain (e.g., "mysite.com")
+  tlds?: string[]    // Optional TLDs (defaults to ["com", "id", "org"] or extracted from name)
 }
 ```
+
+When a full domain is provided in the `name` field:
+
+- The domain name and TLD are automatically separated
+- Example: "myawesomesite.com" → name: "myawesomesite", tld: "com"
+- If `tlds` array is empty, the extracted TLD is used
+- Supports subdomains: "api.example.com" → name: "api.example", tld: "com"
 
 ## Important Reminders
 

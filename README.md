@@ -79,6 +79,21 @@ Check domain availability by sending a POST request to `/api/domains/check`:
 }
 ```
 
+You can also provide a full domain name:
+
+```json
+{
+	"name": "example.com",
+	"tlds": [] // Will check only .com (extracted from name)
+}
+```
+
+The API automatically handles:
+
+- Domain extraction: "example.com" → checks example.com
+- Subdomain support: "api.example.com" → checks api.example.com
+- Default TLDs: Empty `tlds` array uses extracted TLD or defaults to ["com", "id", "org"]
+
 ## Project Structure
 
 ```
