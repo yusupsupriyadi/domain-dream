@@ -15,7 +15,7 @@ export function DomainChecker() {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (domain.trim()) {
-			checkDomain.mutate(domain.trim());
+			checkDomain.mutate({ name: domain.trim() });
 		}
 	};
 
@@ -58,52 +58,47 @@ export function DomainChecker() {
 				)}
 
 				{checkDomain.data && (
-					<div className='mt-4 space-y-2'>
-						<Alert
-							variant={
-								checkDomain.data.available
-									? 'default'
-									: 'destructive'
-							}
-						>
-							<div className='flex items-center space-x-2'>
-								{checkDomain.data.available ? (
-									<CheckCircle className='h-4 w-4' />
-								) : (
-									<XCircle className='h-4 w-4' />
-								)}
-								<AlertDescription>
-									<strong>
-										{checkDomain.data.domain}.com
-									</strong>{' '}
-									is{' '}
-									{checkDomain.data.available
-										? 'available'
-										: 'not available'}
-									{checkDomain.data.available &&
-										checkDomain.data.price &&
-										` for $${checkDomain.data.price}/year`}
-								</AlertDescription>
-							</div>
-						</Alert>
+					<div className='mt-4 space-y-3'>
+						<div className='text-muted-foreground text-sm'>
+							Checked {checkDomain.data.totalChecked} domains for
+							&quot;{checkDomain.data.keyword}&quot;
+						</div>
 
-						{!checkDomain.data.available &&
-							checkDomain.data.alternatives.length > 0 && (
-								<div className='space-y-1'>
-									<p className='text-muted-foreground text-sm'>
-										Alternative suggestions:
-									</p>
-									<ul className='space-y-1 text-sm'>
-										{checkDomain.data.alternatives.map(
-											(alt) => (
-												<li key={alt} className='ml-4'>
-													• {alt}
-												</li>
-											)
+						{checkDomain.data.availableDomains.length > 0 && (
+							<Alert>
+								<CheckCircle className='h-4 w-4' />
+								<AlertDescription>
+									Found{' '}
+									{checkDomain.data.availableDomains.length}{' '}
+									available domains!
+								</AlertDescription>
+							</Alert>
+						)}
+
+						<div className='space-y-2'>
+							{checkDomain.data.results.map((result) => (
+								<div
+									key={result.domain}
+									className='flex items-center justify-between rounded-lg border p-3'
+								>
+									<div className='flex items-center space-x-2'>
+										{result.available ? (
+											<CheckCircle className='h-4 w-4 text-green-500' />
+										) : (
+											<XCircle className='h-4 w-4 text-red-500' />
 										)}
-									</ul>
+										<span className='font-medium'>
+											{result.domain}
+										</span>
+									</div>
+									<span className='text-muted-foreground text-sm'>
+										{result.available
+											? 'Available'
+											: result.registrar || 'Registered'}
+									</span>
 								</div>
-							)}
+							))}
+						</div>
 					</div>
 				)}
 			</CardContent>
