@@ -100,12 +100,16 @@ export class DomainChecker {
 			if (entity.roles?.includes('registrar')) {
 				const vcardArray = entity.vcardArray;
 				if (Array.isArray(vcardArray) && vcardArray.length > 1) {
-					for (const entry of vcardArray[1]) {
-						if (
-							(entry[0] === 'fn' || entry[0] === 'org') &&
-							entry[3]
-						) {
-							return entry[3];
+					const vcardData = vcardArray[1];
+					if (Array.isArray(vcardData)) {
+						for (const entry of vcardData) {
+							if (
+								Array.isArray(entry) &&
+								(entry[0] === 'fn' || entry[0] === 'org') &&
+								entry[3]
+							) {
+								return String(entry[3]);
+							}
 						}
 					}
 				}
