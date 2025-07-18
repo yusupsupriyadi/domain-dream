@@ -290,9 +290,42 @@ When a full domain is provided in the `name` field:
 - If `tlds` array is empty, the extracted TLD is used
 - Supports subdomains: "api.example.com" → name: "api.example", tld: "com"
 
+## TickTick Project Management Integration
+
+### Project Tracking Rules
+
+All features and tasks for the Domain Dream project MUST be tracked in TickTick:
+
+1. **Project Name**: "Domain Dream" (ID: 687a67e78f08b1a7432a326d)
+2. **View Mode**: Kanban board with Phase 1, Phase 2, Phase 3
+3. **Task Management**:
+    - Create tasks for ALL new features before implementation
+    - Update task status in real-time (pending → in progress → completed)
+    - Include detailed descriptions and technical notes
+    - Set appropriate priority levels (1=Low, 3=Medium, 5=High)
+4. **Documentation**:
+    - Document implementation details in task descriptions
+    - Record technical decisions and architecture choices
+    - Track dependencies between tasks
+5. **Progress Tracking**:
+    - Mark tasks as completed immediately after implementation
+    - Keep phase-based organization for roadmap clarity
+    - Regular sync between development progress and TickTick
+
+### Integration Commands
+
+Use the TickTick MCP tools for project management:
+
+- `get_user_projects` - List all projects
+- `get_project_with_data` - Get project details with tasks
+- `create_task` - Create new tasks
+- `update_task` - Update task status/details
+- `complete_task` - Mark tasks as completed
+
 ## Important Reminders
 
 - ALWAYS follow the Prettier configuration defined in .prettierrc for all code
 - Use tabs with width 4, single quotes, semicolons
 - Follow ElysiaJS modular structure for API development
 - Maintain separation of concerns (controller, service, model)
+- Track ALL features and tasks in TickTick "Domain Dream" project

@@ -1,14 +1,24 @@
 # Domain Dream
 
-A modern domain availability checker built with Next.js 15, TypeScript, and ElysiaJS.
+A modern domain search and AI-powered domain name generator platform built with Next.js 15, TypeScript, and Magic UI components.
 
 ## Features
 
-- 🔍 **Domain Availability Checking**: Check domain availability across multiple TLDs using RDAP protocol
-- ⚡ **Fast & Type-Safe API**: Built with ElysiaJS for maximum performance and type safety
-- 🎨 **Modern UI**: Beautiful interface with shadcn/ui components
-- 🧪 **Fully Tested**: Comprehensive test coverage with Bun test runner
-- 📱 **Responsive Design**: Works seamlessly on all devices
+### ✅ Completed Features
+
+- 🔍 **Domain Availability Checking**: Real-time RDAP-based checking across multiple TLDs
+- 🎨 **Modern Minimalist UI**: Black and white theme with Magic UI components
+- ✨ **Smooth Animations**: Text animations (blurInUp, slideUp) and shimmer effects
+- 🔄 **Mode Toggle**: Switch between Search Domain and AI Generator modes
+- ⚡ **Fast & Type-Safe API**: Built with ElysiaJS for maximum performance
+- 📱 **Responsive Design**: Optimized for all devices
+
+### 🚧 Upcoming Features
+
+- 📦 **Bulk Domain Checking**: Check up to 50 domains simultaneously (Phase 1)
+- 🤖 **AI Domain Generator**: Generate creative domain names (Phase 2)
+- 💬 **AI Chat with Memory**: Conversational brainstorming interface (Phase 2)
+- 📊 **Domain Analytics**: SEO insights, trends, and valuation (Phase 2)
 
 ## Tech Stack
 
@@ -99,6 +109,9 @@ The API automatically handles:
 ```
 src/
 ├── app/                    # Next.js App Router
+│   ├── (home)/            # Homepage with domain search
+│   │   ├── page.tsx       # Main search interface
+│   │   └── partials/      # Page components
 │   ├── api/               # API routes
 │   │   └── [[...slugs]]/  # ElysiaJS catch-all route
 │   │       ├── modules/   # Modular API structure
@@ -106,9 +119,12 @@ src/
 │   │       │   └── domains/
 │   │       └── route.ts   # Main API handler
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
+│   └── globals.css        # Global styles
 ├── components/            # React components
-│   └── ui/               # shadcn/ui components
+│   └── ui/               # shadcn/ui + Magic UI components
+│       ├── dot-pattern.tsx      # Background pattern
+│       ├── shimmer-button.tsx   # Animated buttons
+│       └── text-animate.tsx     # Text animations
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utilities and services
 │   ├── axios.ts          # HTTP client
