@@ -5,7 +5,7 @@ import { Elysia } from 'elysia';
 mock.module('@/lib/domain-checker', () => ({
 	DomainChecker: class {
 		async checkKeywordTLDs(name: string, tlds?: string[]) {
-			const actualTlds = tlds || ['com', 'id', 'org'];
+			const actualTlds = tlds || ['com', 'id', 'ai', 'org', 'net', 'io'];
 			return {
 				keyword: name,
 				totalChecked: actualTlds.length,
