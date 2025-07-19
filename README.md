@@ -85,7 +85,7 @@ Check domain availability by sending a POST request to `/api/domains/check`:
 ```json
 {
 	"name": "example",
-	"tlds": ["com", "net", "org"] // Optional, defaults to ["com", "id", "org"]
+	"tlds": ["com", "net", "org"] // Optional, defaults to ["com", "id", "ai", "org", "net", "io"]
 }
 ```
 
@@ -100,9 +100,20 @@ You can also provide a full domain name:
 
 The API automatically handles:
 
-- Domain extraction: "example.com" → checks example.com
-- Subdomain support: "api.example.com" → checks api.example.com
-- Default TLDs: Empty `tlds` array uses extracted TLD or defaults to ["com", "id", "org"]
+- Domain extraction: "example.com" → extracts "example" and ".com"
+- Subdomain support: "api.example.com" → extracts "api.example" and ".com"
+- Smart TLD handling:
+    - Empty `tlds` array uses defaults: ["com", "id", "ai", "org", "net", "io"]
+    - If input contains a TLD not in defaults, it's automatically added
+    - Example: "yapping.co" → checks 7 domains (6 defaults + .co)
+
+### UI Features
+
+- **Smart Result Display**:
+    - Results are organized into two sections:
+        - "Searched domain:" - Shows the specific TLD from user input (if provided)
+        - "Other results:" - Shows remaining default TLDs
+    - Improves UX by prioritizing what the user specifically searched for
 
 ## Project Structure
 

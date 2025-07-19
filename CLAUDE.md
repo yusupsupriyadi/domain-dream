@@ -272,14 +272,14 @@ The project uses RDAP (Registration Data Access Protocol) for checking domain av
 - Implementation in `src/lib/domain-checker.ts`
 - Checks multiple TLDs concurrently
 - Returns registration status, registrar info, and dates
-- Default TLDs when not specified: ["com", "id", "org"]
+- Default TLDs when not specified: ["com", "id", "ai", "org", "net", "io"]
 
 ### Domain Check Request Format
 
 ```typescript
 {
   name: string,      // Domain keyword (e.g., "mysite") or full domain (e.g., "mysite.com")
-  tlds?: string[]    // Optional TLDs (defaults to ["com", "id", "org"] or extracted from name)
+  tlds?: string[]    // Optional TLDs (defaults to ["com", "id", "ai", "org", "net", "io"] or extracted from name)
 }
 ```
 
@@ -287,8 +287,19 @@ When a full domain is provided in the `name` field:
 
 - The domain name and TLD are automatically separated
 - Example: "myawesomesite.com" → name: "myawesomesite", tld: "com"
-- If `tlds` array is empty, the extracted TLD is used
+- If `tlds` array is empty:
+    - Default TLDs are used: ["com", "id", "ai", "org", "net", "io"]
+    - The extracted TLD is added if not already in defaults
+    - Example: "yapping.co" → checks 7 domains (6 defaults + .co)
 - Supports subdomains: "api.example.com" → name: "api.example", tld: "com"
+
+### UI Features
+
+- **Smart Domain Result Sections**:
+    - "Searched domain:" section displays the specific TLD from user input (if any)
+    - "Other results:" section shows remaining default TLDs
+    - Results are automatically sorted to prioritize the searched TLD
+    - Improves UX by clearly separating what was specifically searched vs additional results
 
 ## TickTick Project Management Integration
 
