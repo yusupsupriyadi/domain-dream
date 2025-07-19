@@ -5,7 +5,7 @@ import type { CheckDomainDto, DomainCheckResponse } from './model';
 const domainChecker = new DomainChecker();
 
 // Default TLDs when not specified
-const DEFAULT_TLDS = ['com', 'id', 'org'];
+const DEFAULT_TLDS = ['com', 'id', 'ai', 'org', 'net', 'io'];
 
 export class DomainService {
 	static async checkMultipleDomains(
@@ -32,12 +32,15 @@ export class DomainService {
 			if (data.tlds && data.tlds.length > 0) {
 				// Use provided TLDs
 				tlds = data.tlds;
-			} else if (extractedTld) {
-				// Use extracted TLD if no TLDs provided
-				tlds = [extractedTld];
 			} else {
 				// Use default TLDs
-				tlds = DEFAULT_TLDS;
+				tlds = [...DEFAULT_TLDS];
+
+				// If a TLD was extracted from the input (e.g., "yapping.co" -> ".co")
+				// add it to the list if it's not already included
+				if (extractedTld && !tlds.includes(extractedTld)) {
+					tlds.push(extractedTld);
+				}
 			}
 
 			return await domainChecker.checkKeywordTLDs(domainName, tlds);
