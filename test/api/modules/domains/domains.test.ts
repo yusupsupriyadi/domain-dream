@@ -7,7 +7,7 @@ mock.module('@/lib/domain-checker', () => ({
 	DomainChecker: class {
 		async checkKeywordTLDs(name: string, tlds?: string[]) {
 			// Mock successful response
-			const actualTlds = tlds || ['com', 'id', 'org'];
+			const actualTlds = tlds || ['com', 'id', 'ai', 'org', 'net', 'io'];
 			const availableDomains = actualTlds
 				.filter((tld) => tld === 'com')
 				.map((tld) => `${name}.${tld}`);
@@ -72,8 +72,8 @@ describe('Domains Module', () => {
 
 			const data = await response.json();
 			expect(data.keyword).toBe('mydomain');
-			expect(data.totalChecked).toBe(3); // Default: com, id, org
-			expect(data.results).toHaveLength(3);
+			expect(data.totalChecked).toBe(6); // Default: com, id, ai, org, net, io
+			expect(data.results).toHaveLength(6);
 		});
 
 		it('should use default TLDs when empty array provided', async () => {
@@ -93,7 +93,7 @@ describe('Domains Module', () => {
 			expect(response.status).toBe(200);
 
 			const data = await response.json();
-			expect(data.totalChecked).toBe(3); // Default: com, id, org
+			expect(data.totalChecked).toBe(6); // Default: com, id, ai, org, net, io
 		});
 
 		it('should validate domain name format', async () => {
@@ -164,8 +164,11 @@ describe('Domains Module', () => {
 
 			const data = await response.json();
 			expect(data.keyword).toBe('myawesomesite');
-			expect(data.totalChecked).toBe(1); // Only check .com
-			expect(data.results[0].domain).toBe('myawesomesite.com');
+			expect(data.totalChecked).toBe(6); // Default TLDs, .com already included
+			expect(data.results).toHaveLength(6);
+			expect(
+				data.results.some((r) => r.domain === 'myawesomesite.com')
+			).toBe(true);
 		});
 
 		it('should handle subdomain extraction correctly', async () => {
@@ -186,8 +189,58 @@ describe('Domains Module', () => {
 
 			const data = await response.json();
 			expect(data.keyword).toBe('api.example');
-			expect(data.totalChecked).toBe(1);
-			expect(data.results[0].domain).toBe('api.example.com');
+			expect(data.totalChecked).toBe(6); // Default TLDs, .com already included
+			expect(data.results).toHaveLength(6);
+			expect(
+				data.results.some((r) => r.domain === 'api.example.com')
+			).toBe(true);
+		});
+
+		it('should add extracted TLD to default TLDs when not already included', async () => {
+			const response = await app.handle(
+				new Request('http://localhost/domains/check', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						name: 'yapping.co',
+						tlds: [],
+					}),
+				})
+			);
+
+			expect(response.status).toBe(200);
+
+			const data = await response.json();
+			expect(data.keyword).toBe('yapping');
+			expect(data.totalChecked).toBe(7); // 6 defaults + .co
+			expect(data.results).toHaveLength(7);
+
+			// Check that default TLDs are included
+			expect(data.results.some((r) => r.domain === 'yapping.com')).toBe(
+				true
+			);
+			expect(data.results.some((r) => r.domain === 'yapping.id')).toBe(
+				true
+			);
+			expect(data.results.some((r) => r.domain === 'yapping.ai')).toBe(
+				true
+			);
+			expect(data.results.some((r) => r.domain === 'yapping.org')).toBe(
+				true
+			);
+			expect(data.results.some((r) => r.domain === 'yapping.net')).toBe(
+				true
+			);
+			expect(data.results.some((r) => r.domain === 'yapping.io')).toBe(
+				true
+			);
+
+			// Check that extracted TLD is also included
+			expect(data.results.some((r) => r.domain === 'yapping.co')).toBe(
+				true
+			);
 		});
 	});
 });
