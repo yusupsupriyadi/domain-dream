@@ -19,8 +19,8 @@ export const CheckDomainDto = t.Object({
 			}),
 			{
 				description:
-					'List of TLDs to check (default: ["com", "id", "org"])',
-				example: ['com', 'net', 'org', 'io'],
+					'List of TLDs to check (default: ["com", "id", "ai", "org", "net", "io"])',
+				example: ['com', 'net', 'org', 'io', 'ai', 'dev'],
 			}
 		)
 	),
